@@ -7,7 +7,8 @@ module DatabaseCleaner
       include ::DatabaseCleaner::Redis::Base
       include ::DatabaseCleaner::Generic::Truncation
 
-      def clean(url = self.db)
+      def clean
+        url = db
         redis = url == :default ? default_redis : ::Redis.connect(:url => url)
         if @only
           @only.each do |term|
