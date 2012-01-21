@@ -16,6 +16,15 @@ module DatabaseCleaner
       def db
         @db || :default
       end
+
+      alias url db
+
+      private
+      
+      def connection
+        @connection ||= url == :default ? ::Redis.connect : ::Redis.connect(:url => url)
+      end
+      
     end
   end
 end

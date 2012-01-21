@@ -8,28 +8,19 @@ module DatabaseCleaner
       include ::DatabaseCleaner::Generic::Truncation
 
       def clean
-        url = db
-        redis = url == :default ? default_redis : ::Redis.connect(:url => url)
         if @only
           @only.each do |term|
-            redis.keys(term).each { |k| redis.del k }
+            connection.keys(term).each { |k| connection.del k }
           end
         elsif @tables_to_exclude
           keys_except = []
-          @tables_to_exclude.each { |term| keys_except += redis.keys(term) }
-          redis.keys.each { |k| redis.del(k) unless keys_except.include?(k) }
+          @tables_to_exclude.each { |term| keys_except += connection.keys(term) }
+          connection.keys.each { |k| connection.del(k) unless keys_except.include?(k) }
         else
-          redis.flushdb
+          connection.flushdb
         end
-        redis.quit unless url == :default
+        connection.quit unless url == :default
       end
-
-      private
-     
-      def default_redis
-        ::Redis.connect
-      end
-
     end
   end
 end
