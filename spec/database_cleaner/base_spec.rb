@@ -4,6 +4,7 @@ require 'database_cleaner/data_mapper/transaction'
 require 'database_cleaner/mongo_mapper/truncation'
 require 'database_cleaner/mongoid/truncation'
 require 'database_cleaner/couch_potato/truncation'
+require 'database_cleaner/couchrest/truncation'
 
 module DatabaseCleaner
   describe Base do
@@ -17,6 +18,7 @@ module DatabaseCleaner
          Temp_MM = ::MongoMapper  if defined?(::MongoMapper)  and not defined?(Temp_MM)
          Temp_MO = ::Mongoid      if defined?(::Mongoid)      and not defined?(Temp_MO)
          Temp_CP = ::CouchPotato  if defined?(::CouchPotato)  and not defined?(Temp_CP)
+         Temp_CR = ::CouchRest    if defined?(::CouchRest)    and not defined?(Temp_CR)
          Temp_SQ = ::Sequel       if defined?(::Sequel)       and not defined?(Temp_SQ)
          Temp_MP = ::Moped        if defined?(::Moped)        and not defined?(Temp_MP)
        end
@@ -28,6 +30,7 @@ module DatabaseCleaner
          Object.send(:remove_const, 'MongoMapper')  if defined?(::MongoMapper)
          Object.send(:remove_const, 'Mongoid')      if defined?(::Mongoid)
          Object.send(:remove_const, 'CouchPotato')  if defined?(::CouchPotato)
+         Object.send(:remove_const, 'CouchRest')    if defined?(::CouchRest)
          Object.send(:remove_const, 'Sequel')       if defined?(::Sequel)
          Object.send(:remove_const, 'Moped')        if defined?(::Moped)
 
@@ -38,6 +41,7 @@ module DatabaseCleaner
          ::MongoMapper  = Temp_MM if defined? Temp_MM
          ::Mongoid      = Temp_MO if defined? Temp_MO
          ::CouchPotato  = Temp_CP if defined? Temp_CP
+         ::CouchRest    = Temp_CR if defined? Temp_CR
          ::Moped        = Temp_MP if defined? Temp_MP
        end
 
@@ -48,6 +52,7 @@ module DatabaseCleaner
          Object.send(:remove_const, 'MongoMapper')  if defined?(::MongoMapper)
          Object.send(:remove_const, 'Mongoid')      if defined?(::Mongoid)
          Object.send(:remove_const, 'CouchPotato')  if defined?(::CouchPotato)
+         Object.send(:remove_const, 'CouchRest')    if defined?(::CouchRest)
          Object.send(:remove_const, 'Sequel')       if defined?(::Sequel)
          Object.send(:remove_const, 'Moped')        if defined?(::Moped)
        end
@@ -64,6 +69,7 @@ module DatabaseCleaner
          Object.const_set('MongoMapper', 'Mapping mock mongos')
          Object.const_set('Mongoid',     'Mongoid mock')
          Object.const_set('CouchPotato', 'Couching mock potatos')
+         Object.const_set('CouchRest',   'Couchrest mock')
          Object.const_set('Sequel',      'Sequel mock')
          Object.const_set('Moped',       'Moped mock')
 
@@ -76,6 +82,7 @@ module DatabaseCleaner
          Object.const_set('MongoMapper', 'Mapping mock mongos')
          Object.const_set('Mongoid',     'Mongoid mock')
          Object.const_set('CouchPotato', 'Couching mock potatos')
+         Object.const_set('CouchRest',   'Couchrest mock')
          Object.const_set('Sequel',      'Sequel mock')
          Object.const_set('Moped',       'Moped mock')
 
@@ -87,6 +94,7 @@ module DatabaseCleaner
          Object.const_set('MongoMapper', 'Mapping mock mongos')
          Object.const_set('Mongoid',     'Mongoid mock')
          Object.const_set('CouchPotato', 'Couching mock potatos')
+         Object.const_set('CouchRest',   'Couchrest mock')
          Object.const_set('Sequel',      'Sequel mock')
          Object.const_set('Moped',       'Moped mock')
 
@@ -97,6 +105,7 @@ module DatabaseCleaner
        it "should detect Mongoid fourth" do
          Object.const_set('Mongoid',     'Mongoid mock')
          Object.const_set('CouchPotato', 'Couching mock potatos')
+         Object.const_set('CouchRest',   'Couchrest mock')
          Object.const_set('Sequel',      'Sequel mock')
          Object.const_set('Moped',       'Moped mock')
 
@@ -106,6 +115,7 @@ module DatabaseCleaner
 
        it "should detect CouchPotato fifth" do
          Object.const_set('CouchPotato', 'Couching mock potatos')
+         Object.const_set('CouchRest',   'Couchrest mock')
          Object.const_set('Sequel',      'Sequel mock')
          Object.const_set('Moped',       'Moped mock')
 
@@ -113,7 +123,16 @@ module DatabaseCleaner
          cleaner.should be_auto_detected
        end
 
-       it "should detect Sequel sixth" do
+       it "should detect CouchRest sixth" do
+         Object.const_set('CouchRest',   'Couchrest mock')
+         Object.const_set('Sequel',      'Sequel mock')
+         Object.const_set('Moped',       'Moped mock')
+
+         cleaner.orm.should == :couchrest
+         cleaner.should be_auto_detected
+       end
+       
+       it "should detect Sequel seventh" do
          Object.const_set('Sequel', 'Sequel mock')
          Object.const_set('Moped',  'Moped mock')
 
@@ -121,7 +140,7 @@ module DatabaseCleaner
          cleaner.should be_auto_detected
        end
 
-       it "should detect Moped seventh" do
+       it "should detect Moped eighth" do
          Object.const_set('Moped', 'Moped mock')
 
          cleaner.orm.should == :moped
@@ -502,6 +521,11 @@ module DatabaseCleaner
       it 'sets strategy to :truncation for CouchPotato' do
         cleaner = DatabaseCleaner::Base.new(:couch_potato)
         cleaner.strategy.should be_instance_of DatabaseCleaner::CouchPotato::Truncation
+      end
+      
+      it 'sets strategy to :truncation for CouchRest' do
+        cleaner = DatabaseCleaner::Base.new(:couchrest)
+        cleaner.strategy.should be_instance_of DatabaseCleaner::CouchRest::Truncation
       end
 
       it 'sets strategy to :truncation for Moped' do

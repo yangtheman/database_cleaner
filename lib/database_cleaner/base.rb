@@ -128,6 +128,8 @@ module DatabaseCleaner
           :mongoid
         elsif defined? ::CouchPotato
           :couch_potato
+        elsif defined? ::CouchRest
+          :couchrest
         elsif defined? ::Sequel
           :sequel
         elsif defined? ::Moped
@@ -142,7 +144,7 @@ module DatabaseCleaner
       case orm
       when :active_record, :data_mapper, :sequel
         self.strategy = :transaction
-      when :mongo_mapper, :mongoid, :couch_potato, :moped
+      when :mongo_mapper, :mongoid, :couch_potato, :moped, :couchrest
         self.strategy = :truncation
       end
     end

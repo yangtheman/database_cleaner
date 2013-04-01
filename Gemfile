@@ -21,11 +21,12 @@ group :development do
     gem "bson_ext"
   gem "mongo_mapper"
   gem "couch_potato"
+  gem 'couchrest_model'
   gem "sequel",               "~>3.21.0"
   #gem "ibm_db"  # I don't want to add this dependency, even as a dev one since it requires DB2 to be installed
-  gem 'mysql', '~> 2.8.1'
-  gem 'mysql2'
-  gem 'pg'
+  # gem 'mysql', '~> 2.8.1'
+  # gem 'mysql2'
+  # gem 'pg'
 
   gem 'guard-rspec'
 end

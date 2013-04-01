@@ -55,6 +55,13 @@ describe ::DatabaseCleaner do
       cleaner.orm.should == :couch_potato
       ::DatabaseCleaner.connections.size.should == 1
     end
+    
+    it "should accept :couchrest" do
+      cleaner = ::DatabaseCleaner[:couchrest]
+      cleaner.should be_a(::DatabaseCleaner::Base)
+      cleaner.orm.should == :couchrest
+      ::DatabaseCleaner.connections.size.should == 1
+    end
 
     it "should accept :moped" do
       cleaner = ::DatabaseCleaner[:moped]
@@ -302,5 +309,9 @@ describe ::DatabaseCleaner do
       subject.orm_module(:couch_potato).should == DatabaseCleaner::CouchPotato
     end
 
+    it "should return DatabaseCleaner::CouchRest for :couchrest" do
+      ::DatabaseCleaner::CouchRest = mock("cr module") unless defined? ::DatabaseCleaner::CouchRest
+      subject.orm_module(:couchrest).should == DatabaseCleaner::CouchRest
+    end
   end
 end

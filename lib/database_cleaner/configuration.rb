@@ -111,6 +111,8 @@ module DatabaseCleaner
           DatabaseCleaner::Moped
         when :couch_potato
           DatabaseCleaner::CouchPotato
+        when :couchrest
+          DatabaseCleaner::CouchRest
         when :sequel
           DatabaseCleaner::Sequel
       end
